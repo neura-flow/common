@@ -10,7 +10,7 @@ import (
 
 func TestHttpServer(t *testing.T) {
 	logger := log.DefaultLogger()
-	svr := httpserver.NewHttpServer(logger, &httpserver.Config{
+	svr := httpserver.New(logger, &httpserver.Config{
 		GinMode:    gin.DebugMode,
 		ServerPort: 10001,
 	})

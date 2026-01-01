@@ -1,0 +1,16 @@
+[
+  "Item A",
+  "Item B",
+  "Item C:",
+  [
+    "Sub Item C.1",
+    "Sub Item C.2",
+    "Sub Item C.3"
+  ],
+  "Item D",
+  [
+    "Sub Item D.1",
+    "Sub Item D.2"
+  ],
+  "Item E"
+]

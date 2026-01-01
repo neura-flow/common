@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/neura-flow/common/log"
@@ -15,17 +16,24 @@ type MetricsConfig struct {
 	Enabled        bool   `json:"enabled,omitempty"`        // 是否开启监控
 	Tables         string `json:"tables,omitempty"`         // 要监控的表,用逗号隔开
 	SlowLogMinCost int    `json:"slowLogMinCost,omitempty"` // 慢日志最低耗时, <=0表示关闭
-	clusterId      string `json:"-"`                        // 集群ID
 }
 
 type Config struct {
 	File string `json:"file"`
-	//Timeout 超时参数
-	Timeout types.Timeout `json:"timeout,omitempty"`
 	//Pool 连接池参数
 	Pool types.Pool `json:"pool,omitempty"`
-	// mysql监控
+	//Options 其他参数，格式 aaa=bbb&ccc=ddd，具体参数参考 gorm 文档
+	Options string `json:"options,omitempty"`
+	// 监控
 	Metrics MetricsConfig `json:"metrics,omitempty"`
+}
+
+func (cfg *Config) DSN() string {
+	params := ""
+	if cfg.Options != "" {
+		params = params + "&" + cfg.Options
+	}
+	return fmt.Sprintf("file:%s?%s", cfg.File, params)
 }
 
 type Client struct {
@@ -37,7 +45,7 @@ func NewClient(ctx context.Context, logger log.Logger, cfg *Config) (*Client, er
 	gormConfig := &gorm.Config{
 		Logger: &loggerAdapter{logger},
 	}
-	db, err := gorm.Open(sqlite.Open(cfg.File), gormConfig)
+	db, err := gorm.Open(sqlite.Open(cfg.DSN()), gormConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +58,6 @@ func NewClient(ctx context.Context, logger log.Logger, cfg *Config) (*Client, er
 	sqlDB.SetMaxOpenConns(cfg.Pool.MaxOpen)
 
 	if cfg.Metrics.Enabled {
-		cfg.Metrics.clusterId = ""
 		initializeMetrics(db, cfg, logger)
 	}
 

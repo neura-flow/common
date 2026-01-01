@@ -27,7 +27,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	l.Infof("init default logger OK")
+	l.Infof("default logger initialized")
 }
 
 func NewZapLogger(cfg *Config) (Logger, error) {

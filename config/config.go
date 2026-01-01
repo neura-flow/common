@@ -230,7 +230,7 @@ func (c *Config) VaultAddress() string {
 }
 
 func (c *Config) AppFile() string {
-	return c.string(AppFile, DefaultCfgFile)
+	return c.string(c.configFileVar(), DefaultCfgFile)
 }
 
 // Dump find key and unmarshal to target

@@ -60,7 +60,7 @@ func TestSuffixes(t *testing.T) {
 }
 
 func TestDetectMimeType(t *testing.T) {
-	content, err := os.ReadFile("/Users/liqj/Downloads/testdata/Go架构2024年度规划.pptx")
+	content, err := os.ReadFile("./data/Go架构2024年度规划.pptx")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,7 +68,7 @@ func TestDetectMimeType(t *testing.T) {
 }
 
 func TestDetectFile(t *testing.T) {
-	fmt.Printf("%s\n", DetectFile("/Users/liqj/Downloads/testdata/Go架构2024年度规划.pptx"))
+	fmt.Printf("%s\n", DetectFile("./data/Go架构2024年度规划.pptx"))
 	fmt.Printf("%s\n", DetectFile("./supported_mimes.md"))
 }
 

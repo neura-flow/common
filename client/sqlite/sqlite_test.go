@@ -6,18 +6,12 @@ import (
 	"time"
 
 	"github.com/neura-flow/common/log"
-	"github.com/neura-flow/common/types"
 	"github.com/neura-flow/common/util"
 )
 
 func TestQuery(t *testing.T) {
 	cli, err := NewClient(context.TODO(), log.DefaultLogger(), &Config{
 		File: "./test.db",
-		Timeout: types.Timeout{
-			Dail:  30000,
-			Read:  30000,
-			Write: 30000,
-		},
 	})
 	if err != nil {
 		t.Fatal(err)

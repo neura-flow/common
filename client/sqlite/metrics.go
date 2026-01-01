@@ -41,7 +41,7 @@ func (m *metrics) init(db *gorm.DB) {
 
 	// 注册监控指标
 	metricDuration := prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Namespace: "mysql",
+		Namespace: "sqlite",
 		Subsystem: "client",
 		Name:      "duration",
 		Help:      "client requests duration(ms).",
@@ -49,7 +49,7 @@ func (m *metrics) init(db *gorm.DB) {
 	}, []string{"cluster_id", "action", "table"})
 
 	metricCounter := prometheus.NewCounterVec(prometheus.CounterOpts{
-		Namespace: "mysql",
+		Namespace: "sqlite",
 		Subsystem: "client",
 		Name:      "result",
 		Help:      "The result of processed requests",
@@ -121,21 +121,21 @@ func (m *metrics) Collect(db *gorm.DB, action string) error {
 	var d = time.Since(startTime).Milliseconds()
 	if m.cfg.Metrics.SlowLogMinCost > 0 && d >= int64(m.cfg.Metrics.SlowLogMinCost) {
 		var sql = db.Statement.Dialector.Explain(db.Statement.SQL.String(), db.Statement.Vars...)
-		m.logger.Warnf("MySQLSlowLog Latency: %dms, SQL: %s", d, sql)
+		m.logger.Warnf("SqliteSlowLog Latency: %dms, SQL: %s", d, sql)
 	}
 
 	if m.tables[db.Statement.Table] == 0 {
 		return nil
 	}
-	var success = "1"
-	var msg = ""
+	//var success = "1"
+	//var msg = ""
 	if db.Error != nil {
-		msg = db.Error.Error()
+		//msg = db.Error.Error()
 		if db.Error != gorm.ErrRecordNotFound {
-			success = "0"
+			//success = "0"
 		}
 	}
-	m.metricCounter.WithLabelValues(m.cfg.Metrics.clusterId, action, db.Statement.Table, success, msg).Inc()
-	m.metricDuration.WithLabelValues(m.cfg.Metrics.clusterId, action, db.Statement.Table).Observe(float64(d))
+	//m.metricCounter.WithLabelValues(m.cfg.Metrics.clusterId, action, db.Statement.Table, success, msg).Inc()
+	//m.metricDuration.WithLabelValues(m.cfg.Metrics.clusterId, action, db.Statement.Table).Observe(float64(d))
 	return nil
 }

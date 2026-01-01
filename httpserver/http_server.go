@@ -37,7 +37,7 @@ type HttpServer struct {
 	stopCh  chan interface{}
 }
 
-func NewHttpServer(logger log.Logger, cfg *Config) *HttpServer {
+func New(logger log.Logger, cfg *Config) *HttpServer {
 	if cfg.GinMode == "" {
 		cfg.GinMode = gin.ReleaseMode
 	}
@@ -70,10 +70,10 @@ func (s *HttpServer) Start() error {
 		if errors.Is(err, http.ErrServerClosed) ||
 			strings.Contains(err.Error(), "use of closed network connection") {
 			return nil
-		} else {
-			s.logger.Errorf("%v", err)
-			return err
 		}
+
+		s.logger.Errorf("%v", err)
+		return err
 	}
 	return nil
 }
